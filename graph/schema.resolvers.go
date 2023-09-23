@@ -11,14 +11,29 @@ import (
 	"github.com/CorTexDotMe/todo-tracker-backend/graph/model"
 )
 
-// CreateTodo is the resolver for the createTodo field.
-func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
-	panic(fmt.Errorf("not implemented: CreateTodo - createTodo"))
+// CreateTask is the resolver for the createTask field.
+func (r *mutationResolver) CreateTask(ctx context.Context, input model.NewTask) (*model.Task, error) {
+	panic(fmt.Errorf("not implemented: CreateTask - createTask"))
 }
 
-// Todos is the resolver for the todos field.
-func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	panic(fmt.Errorf("not implemented: Todos - todos"))
+// CreateUser is the resolver for the createUser field.
+func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*model.User, error) {
+	panic(fmt.Errorf("not implemented: CreateUser - createUser"))
+}
+
+// Login is the resolver for the login field.
+func (r *mutationResolver) Login(ctx context.Context, input model.Login) (string, error) {
+	panic(fmt.Errorf("not implemented: Login - login"))
+}
+
+// RefreshToken is the resolver for the refreshToken field.
+func (r *mutationResolver) RefreshToken(ctx context.Context, intput model.RefreshToken) (string, error) {
+	panic(fmt.Errorf("not implemented: RefreshToken - refreshToken"))
+}
+
+// Tasks is the resolver for the tasks field.
+func (r *queryResolver) Tasks(ctx context.Context) ([]*model.Task, error) {
+	panic(fmt.Errorf("not implemented: Tasks - tasks"))
 }
 
 // Mutation returns MutationResolver implementation.

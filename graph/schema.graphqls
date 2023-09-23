@@ -2,11 +2,14 @@
 #
 # https://gqlgen.com/getting-started/
 
-type Todo {
+type Task {
   id: ID!
-  text: String!
+  title: String!
+  description: String
+  status: String!
   done: Boolean!
-  user: User!
+  dateCreated: String!
+  dueDate: String
 }
 
 type User {
@@ -15,14 +18,33 @@ type User {
 }
 
 type Query {
-  todos: [Todo!]!
+  tasks: [Task!]!
 }
 
-input NewTodo {
-  text: String!
-  userId: String!
+input NewTask {
+  title: String!
+  description: String
+  status: String
+  dueDate: String
+}
+
+input NewUser {
+  username: String!
+  password: String!
+}
+
+input Login {
+  username: String!
+  password: String!
+}
+
+input RefreshToken {
+  token: String
 }
 
 type Mutation {
-  createTodo(input: NewTodo!): Todo!
+  createTask(input: NewTask!): Task!
+  createUser(input: NewUser!): User!
+  login(input: Login!): String!
+  refreshToken(intput: RefreshToken!): String!
 }
