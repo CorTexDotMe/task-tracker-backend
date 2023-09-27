@@ -1,6 +1,6 @@
-module github.com/CorTexDotMe/todo-tracker-backend
+module task-tracker-backend
 
-go 1.20
+go 1.21
 
 require (
 	github.com/99designs/gqlgen v0.17.38

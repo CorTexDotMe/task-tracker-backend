@@ -8,7 +8,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/CorTexDotMe/todo-tracker-backend/graph/model"
+	"task-tracker-backend/internal/graph/model"
 )
 
 // CreateTask is the resolver for the createTask field.

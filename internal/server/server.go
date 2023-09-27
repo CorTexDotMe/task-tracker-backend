@@ -1,18 +1,19 @@
-package main
+package server
 
 import (
 	"log"
 	"net/http"
 	"os"
 
+	"task-tracker-backend/internal/graph"
+
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/CorTexDotMe/todo-tracker-backend/graph"
 )
 
 const defaultPort = "8080"
 
-func main() {
+func Run() {
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = defaultPort
