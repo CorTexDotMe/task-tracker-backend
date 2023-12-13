@@ -5,12 +5,14 @@ import (
 	"net/http"
 	"os"
 
+	"task-tracker-backend/internal/database"
 	"task-tracker-backend/internal/graph"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
 )
 
+// TODO env for main port
 const defaultPort = "8080"
 
 func Run() {
@@ -18,6 +20,9 @@ func Run() {
 	if port == "" {
 		port = defaultPort
 	}
+
+	database.InitDB()
+	defer database.CloseDB()
 
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{}}))
 
