@@ -23,6 +23,7 @@ func Run() {
 
 	database.InitDB()
 	defer database.CloseDB()
+	database.Migrate()
 
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{}}))
 
