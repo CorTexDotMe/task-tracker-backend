@@ -11,13 +11,15 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
-// TODO: move vars into .env file
+// TODO move vars into .env file
 const (
-	host     = "host.docker.internal"
-	port     = 5432
-	user     = "postgres"
-	password = "password"
-	dbname   = "task-tracker"
+	HOST                 = "host.docker.internal"
+	PORT                 = 5432
+	USER                 = "postgres"
+	PASSWORD             = "password"
+	DATABASE_NAME        = "task-tracker"
+	MIGRATION_FILES_PATH = "file://../../internal/database/migrations"
+	DATABASE_DRIVER_NAME = "postgres"
 )
 
 var DATABASE_CONNECTION *sql.DB
@@ -25,7 +27,7 @@ var DATABASE_CONNECTION *sql.DB
 func InitDB() {
 	connectionProperties := fmt.Sprintf(
 		"host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
-		host, port, user, password, dbname)
+		HOST, PORT, USER, PASSWORD, DATABASE_NAME)
 
 	DATABASE_CONNECTION = postgres.ConnectToPostgress(connectionProperties)
 }
@@ -40,7 +42,7 @@ func Migrate() {
 	}
 	driver, _ := migratePostgres.WithInstance(DATABASE_CONNECTION, &migratePostgres.Config{})
 	migratoin, migrateErr := migrate.NewWithDatabaseInstance(
-		"file://../../internal/database/migrations", "postgres", driver)
+		MIGRATION_FILES_PATH, DATABASE_DRIVER_NAME, driver)
 	if migrateErr != nil {
 		log.Fatal(migrateErr)
 	}
