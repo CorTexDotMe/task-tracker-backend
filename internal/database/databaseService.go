@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"task-tracker-backend/internal/database/postgres"
+	"task-tracker-backend/internal/utils"
 
 	"github.com/golang-migrate/migrate/v4"
 	migratePostgres "github.com/golang-migrate/migrate/v4/database/postgres"
@@ -37,15 +38,12 @@ func CloseDB() error {
 }
 
 func Migrate() {
-	if err := DATABASE_CONNECTION.Ping(); err != nil {
-		log.Fatal(err)
-	}
+	utils.HandleError(DATABASE_CONNECTION.Ping())
+
 	driver, _ := migratePostgres.WithInstance(DATABASE_CONNECTION, &migratePostgres.Config{})
 	migratoin, migrateErr := migrate.NewWithDatabaseInstance(
 		MIGRATION_FILES_PATH, DATABASE_DRIVER_NAME, driver)
-	if migrateErr != nil {
-		log.Fatal(migrateErr)
-	}
+	utils.HandleError(migrateErr)
 
 	if err := migratoin.Up(); err != nil && err != migrate.ErrNoChange {
 		log.Fatal(err)
