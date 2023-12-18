@@ -11,7 +11,7 @@ import (
 	"strconv"
 	"sync"
 	"sync/atomic"
-	"task-tracker-backend/internal/graph/model"
+	"task-tracker-backend/internal/model"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
@@ -66,6 +66,7 @@ type ComplexityRoot struct {
 		ID          func(childComplexity int) int
 		Status      func(childComplexity int) int
 		Title       func(childComplexity int) int
+		User        func(childComplexity int) int
 	}
 
 	User struct {
@@ -207,6 +208,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Task.Title(childComplexity), true
+
+	case "Task.user":
+		if e.complexity.Task.User == nil {
+			break
+		}
+
+		return e.complexity.Task.User(childComplexity), true
 
 	case "User.id":
 		if e.complexity.User.ID == nil {
@@ -363,7 +371,7 @@ func (ec *executionContext) field_Mutation_createTask_args(ctx context.Context, 
 	var arg0 model.NewTask
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNNewTask2taskᚑtrackerᚑbackendᚋgraphᚋmodelᚐNewTask(ctx, tmp)
+		arg0, err = ec.unmarshalNNewTask2taskᚑtrackerᚑbackendᚋinternalᚋmodelᚐNewTask(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -378,7 +386,7 @@ func (ec *executionContext) field_Mutation_createUser_args(ctx context.Context, 
 	var arg0 model.NewUser
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNNewUser2taskᚑtrackerᚑbackendᚋgraphᚋmodelᚐNewUser(ctx, tmp)
+		arg0, err = ec.unmarshalNNewUser2taskᚑtrackerᚑbackendᚋinternalᚋmodelᚐNewUser(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -393,7 +401,7 @@ func (ec *executionContext) field_Mutation_login_args(ctx context.Context, rawAr
 	var arg0 model.Login
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNLogin2taskᚑtrackerᚑbackendᚋgraphᚋmodelᚐLogin(ctx, tmp)
+		arg0, err = ec.unmarshalNLogin2taskᚑtrackerᚑbackendᚋinternalᚋmodelᚐLogin(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -408,7 +416,7 @@ func (ec *executionContext) field_Mutation_refreshToken_args(ctx context.Context
 	var arg0 model.RefreshToken
 	if tmp, ok := rawArgs["intput"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("intput"))
-		arg0, err = ec.unmarshalNRefreshToken2taskᚑtrackerᚑbackendᚋgraphᚋmodelᚐRefreshToken(ctx, tmp)
+		arg0, err = ec.unmarshalNRefreshToken2taskᚑtrackerᚑbackendᚋinternalᚋmodelᚐRefreshToken(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -498,7 +506,7 @@ func (ec *executionContext) _Mutation_createTask(ctx context.Context, field grap
 	}
 	res := resTmp.(*model.Task)
 	fc.Result = res
-	return ec.marshalNTask2ᚖtaskᚑtrackerᚑbackendᚋgraphᚋmodelᚐTask(ctx, field.Selections, res)
+	return ec.marshalNTask2ᚖtaskᚑtrackerᚑbackendᚋinternalᚋmodelᚐTask(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_createTask(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -523,6 +531,8 @@ func (ec *executionContext) fieldContext_Mutation_createTask(ctx context.Context
 				return ec.fieldContext_Task_dateCreated(ctx, field)
 			case "dueDate":
 				return ec.fieldContext_Task_dueDate(ctx, field)
+			case "user":
+				return ec.fieldContext_Task_user(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Task", field.Name)
 		},
@@ -569,7 +579,7 @@ func (ec *executionContext) _Mutation_createUser(ctx context.Context, field grap
 	}
 	res := resTmp.(*model.User)
 	fc.Result = res
-	return ec.marshalNUser2ᚖtaskᚑtrackerᚑbackendᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+	return ec.marshalNUser2ᚖtaskᚑtrackerᚑbackendᚋinternalᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_createUser(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -742,7 +752,7 @@ func (ec *executionContext) _Query_tasks(ctx context.Context, field graphql.Coll
 	}
 	res := resTmp.([]*model.Task)
 	fc.Result = res
-	return ec.marshalNTask2ᚕᚖtaskᚑtrackerᚑbackendᚋgraphᚋmodelᚐTaskᚄ(ctx, field.Selections, res)
+	return ec.marshalNTask2ᚕᚖtaskᚑtrackerᚑbackendᚋinternalᚋmodelᚐTaskᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_tasks(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -767,6 +777,8 @@ func (ec *executionContext) fieldContext_Query_tasks(ctx context.Context, field 
 				return ec.fieldContext_Task_dateCreated(ctx, field)
 			case "dueDate":
 				return ec.fieldContext_Task_dueDate(ctx, field)
+			case "user":
+				return ec.fieldContext_Task_user(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Task", field.Name)
 		},
@@ -1200,6 +1212,58 @@ func (ec *executionContext) fieldContext_Task_dueDate(ctx context.Context, field
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Task_user(ctx context.Context, field graphql.CollectedField, obj *model.Task) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Task_user(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.User, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.User)
+	fc.Result = res
+	return ec.marshalNUser2ᚖtaskᚑtrackerᚑbackendᚋinternalᚋmodelᚐUser(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Task_user(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Task",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_User_id(ctx, field)
+			case "name":
+				return ec.fieldContext_User_name(ctx, field)
+			case "password":
+				return ec.fieldContext_User_password(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
 	}
 	return fc, nil
@@ -3443,6 +3507,11 @@ func (ec *executionContext) _Task(ctx context.Context, sel ast.SelectionSet, obj
 			}
 		case "dueDate":
 			out.Values[i] = ec._Task_dueDate(ctx, field, obj)
+		case "user":
+			out.Values[i] = ec._Task_user(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -3871,22 +3940,22 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 	return res
 }
 
-func (ec *executionContext) unmarshalNLogin2taskᚑtrackerᚑbackendᚋgraphᚋmodelᚐLogin(ctx context.Context, v interface{}) (model.Login, error) {
+func (ec *executionContext) unmarshalNLogin2taskᚑtrackerᚑbackendᚋinternalᚋmodelᚐLogin(ctx context.Context, v interface{}) (model.Login, error) {
 	res, err := ec.unmarshalInputLogin(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNNewTask2taskᚑtrackerᚑbackendᚋgraphᚋmodelᚐNewTask(ctx context.Context, v interface{}) (model.NewTask, error) {
+func (ec *executionContext) unmarshalNNewTask2taskᚑtrackerᚑbackendᚋinternalᚋmodelᚐNewTask(ctx context.Context, v interface{}) (model.NewTask, error) {
 	res, err := ec.unmarshalInputNewTask(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNNewUser2taskᚑtrackerᚑbackendᚋgraphᚋmodelᚐNewUser(ctx context.Context, v interface{}) (model.NewUser, error) {
+func (ec *executionContext) unmarshalNNewUser2taskᚑtrackerᚑbackendᚋinternalᚋmodelᚐNewUser(ctx context.Context, v interface{}) (model.NewUser, error) {
 	res, err := ec.unmarshalInputNewUser(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNRefreshToken2taskᚑtrackerᚑbackendᚋgraphᚋmodelᚐRefreshToken(ctx context.Context, v interface{}) (model.RefreshToken, error) {
+func (ec *executionContext) unmarshalNRefreshToken2taskᚑtrackerᚑbackendᚋinternalᚋmodelᚐRefreshToken(ctx context.Context, v interface{}) (model.RefreshToken, error) {
 	res, err := ec.unmarshalInputRefreshToken(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -3906,11 +3975,11 @@ func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.S
 	return res
 }
 
-func (ec *executionContext) marshalNTask2taskᚑtrackerᚑbackendᚋgraphᚋmodelᚐTask(ctx context.Context, sel ast.SelectionSet, v model.Task) graphql.Marshaler {
+func (ec *executionContext) marshalNTask2taskᚑtrackerᚑbackendᚋinternalᚋmodelᚐTask(ctx context.Context, sel ast.SelectionSet, v model.Task) graphql.Marshaler {
 	return ec._Task(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNTask2ᚕᚖtaskᚑtrackerᚑbackendᚋgraphᚋmodelᚐTaskᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Task) graphql.Marshaler {
+func (ec *executionContext) marshalNTask2ᚕᚖtaskᚑtrackerᚑbackendᚋinternalᚋmodelᚐTaskᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Task) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -3934,7 +4003,7 @@ func (ec *executionContext) marshalNTask2ᚕᚖtaskᚑtrackerᚑbackendᚋgraph�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNTask2ᚖtaskᚑtrackerᚑbackendᚋgraphᚋmodelᚐTask(ctx, sel, v[i])
+			ret[i] = ec.marshalNTask2ᚖtaskᚑtrackerᚑbackendᚋinternalᚋmodelᚐTask(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -3954,7 +4023,7 @@ func (ec *executionContext) marshalNTask2ᚕᚖtaskᚑtrackerᚑbackendᚋgraph�
 	return ret
 }
 
-func (ec *executionContext) marshalNTask2ᚖtaskᚑtrackerᚑbackendᚋgraphᚋmodelᚐTask(ctx context.Context, sel ast.SelectionSet, v *model.Task) graphql.Marshaler {
+func (ec *executionContext) marshalNTask2ᚖtaskᚑtrackerᚑbackendᚋinternalᚋmodelᚐTask(ctx context.Context, sel ast.SelectionSet, v *model.Task) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -3964,11 +4033,11 @@ func (ec *executionContext) marshalNTask2ᚖtaskᚑtrackerᚑbackendᚋgraphᚋm
 	return ec._Task(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNUser2taskᚑtrackerᚑbackendᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v model.User) graphql.Marshaler {
+func (ec *executionContext) marshalNUser2taskᚑtrackerᚑbackendᚋinternalᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v model.User) graphql.Marshaler {
 	return ec._User(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNUser2ᚖtaskᚑtrackerᚑbackendᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v *model.User) graphql.Marshaler {
+func (ec *executionContext) marshalNUser2ᚖtaskᚑtrackerᚑbackendᚋinternalᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v *model.User) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")

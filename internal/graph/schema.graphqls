@@ -2,6 +2,12 @@
 #
 # https://gqlgen.com/getting-started/
 
+type User {
+  id: ID!
+  name: String!
+  password: String!
+}
+
 type Task {
   id: ID!
   title: String!
@@ -9,13 +15,8 @@ type Task {
   status: String!
   done: Boolean!
   dateCreated: String!
-  dueDate: String
-}
-
-type User {
-  id: ID!
-  name: String!
-  password: String!
+  dueDate: String,
+  user: User!
 }
 
 type Query {

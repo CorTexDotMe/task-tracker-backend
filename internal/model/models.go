@@ -31,6 +31,7 @@ type Task struct {
 	Done        bool    `json:"done"`
 	DateCreated string  `json:"dateCreated"`
 	DueDate     *string `json:"dueDate,omitempty"`
+	User        *User   `json:"user"`
 }
 
 type User struct {

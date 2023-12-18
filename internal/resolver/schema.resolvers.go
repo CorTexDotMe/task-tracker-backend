@@ -1,4 +1,4 @@
-package graph
+package resolver
 
 // This file will be automatically regenerated based on the schema, any resolver implementations
 // will be copied through when generating and any unknown code will be moved to the end.
@@ -7,39 +7,40 @@ package graph
 import (
 	"context"
 	"fmt"
-	model1 "task-tracker-backend/internal/graph/model"
+	"task-tracker-backend/internal/graph"
+	"task-tracker-backend/internal/model"
 )
 
 // CreateTask is the resolver for the createTask field.
-func (r *mutationResolver) CreateTask(ctx context.Context, input model1.NewTask) (*model1.Task, error) {
+func (r *mutationResolver) CreateTask(ctx context.Context, input model.NewTask) (*model.Task, error) {
 	panic(fmt.Errorf("not implemented: CreateTask - createTask"))
 }
 
 // CreateUser is the resolver for the createUser field.
-func (r *mutationResolver) CreateUser(ctx context.Context, input model1.NewUser) (*model1.User, error) {
+func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*model.User, error) {
 	panic(fmt.Errorf("not implemented: CreateUser - createUser"))
 }
 
 // Login is the resolver for the login field.
-func (r *mutationResolver) Login(ctx context.Context, input model1.Login) (string, error) {
+func (r *mutationResolver) Login(ctx context.Context, input model.Login) (string, error) {
 	panic(fmt.Errorf("not implemented: Login - login"))
 }
 
 // RefreshToken is the resolver for the refreshToken field.
-func (r *mutationResolver) RefreshToken(ctx context.Context, intput model1.RefreshToken) (string, error) {
+func (r *mutationResolver) RefreshToken(ctx context.Context, intput model.RefreshToken) (string, error) {
 	panic(fmt.Errorf("not implemented: RefreshToken - refreshToken"))
 }
 
 // Tasks is the resolver for the tasks field.
-func (r *queryResolver) Tasks(ctx context.Context) ([]*model1.Task, error) {
+func (r *queryResolver) Tasks(ctx context.Context) ([]*model.Task, error) {
 	panic(fmt.Errorf("not implemented: Tasks - tasks"))
 }
 
-// Mutation returns MutationResolver implementation.
-func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
+// Mutation returns graph.MutationResolver implementation.
+func (r *Resolver) Mutation() graph.MutationResolver { return &mutationResolver{r} }
 
-// Query returns QueryResolver implementation.
-func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
+// Query returns graph.QueryResolver implementation.
+func (r *Resolver) Query() graph.QueryResolver { return &queryResolver{r} }
 
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }

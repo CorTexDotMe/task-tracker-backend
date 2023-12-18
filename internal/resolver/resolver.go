@@ -1,11 +1,7 @@
-package graph
-
-import "task-tracker-backend/internal/database/repositories"
+package resolver
 
 // This file will not be regenerated automatically.
 //
 // It serves as dependency injection for your app, add any dependencies you require here.
 
-type Resolver struct {
-	taskRepository repositories.TaskRepository
-}
+type Resolver struct{}

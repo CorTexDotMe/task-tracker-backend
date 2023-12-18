@@ -1,6 +1,6 @@
 package main
 
-import "task-tracker-backend/internal/server"
+import server "task-tracker-backend/internal"
 
 func main() {
 	server.Run()

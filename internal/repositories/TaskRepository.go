@@ -3,7 +3,7 @@ package repositories
 import (
 	"strconv"
 	"task-tracker-backend/internal/database"
-	"task-tracker-backend/internal/graph/model"
+	"task-tracker-backend/internal/model"
 	"task-tracker-backend/internal/utils"
 )
 

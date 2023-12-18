@@ -7,6 +7,7 @@ import (
 
 	"task-tracker-backend/internal/database"
 	"task-tracker-backend/internal/graph"
+	"task-tracker-backend/internal/resolver"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
@@ -25,7 +26,7 @@ func Run() {
 	defer database.CloseDB()
 	database.Migrate()
 
-	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{}}))
+	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &resolver.Resolver{}}))
 
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	http.Handle("/query", srv)
