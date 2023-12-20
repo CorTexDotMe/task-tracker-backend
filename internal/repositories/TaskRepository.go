@@ -1,38 +1,35 @@
 package repositories
 
 import (
-	"strconv"
 	"task-tracker-backend/internal/database"
 	"task-tracker-backend/internal/model"
-	"task-tracker-backend/internal/utils"
 )
 
 type TaskRepository struct{}
 
-func (r *TaskRepository) NewTaskToTask(newTask model.NewTask) model.Task {
+func (r *TaskRepository) TaskFromNewTask(newTask model.NewTask, user *model.User) model.Task {
 	return model.Task{
-		ID:          "",
 		Title:       newTask.Title,
 		Description: newTask.Description,
 		Status:      *newTask.Status,
 		Done:        false,
-		DateCreated: "",
 		DueDate:     nil,
+		User:        user,
 	}
 }
 
-func (r *TaskRepository) Save(task model.Task) *model.Task {
-	statement, err := database.DATABASE_CONNECTION.Prepare(
-		"INSERT INTO tasks(title,description,status,done,dateCreated,dueDate,userID) VALUES(?,?,?,?,?,?,?)")
-	utils.HandleError(err)
+func (r *TaskRepository) SaveFromInput(input model.NewTask, user *model.User) (*model.Task, error) {
+	//TODO return error when unique constrains violation
+	task := r.TaskFromNewTask(input, user)
+	r.Save(task)
+	return &task, nil
+}
 
-	//TODO add userID
-	res, err := statement.Exec(task.Title, task.Description, task.Status, task.Done, task.DateCreated, task.DueDate)
-	utils.HandleError(err)
+// Returning the inserted data's primary key in id field of task given as parameter
+func (r *TaskRepository) Save(task model.Task) {
+	database.DB.Create(task)
+}
 
-	id, err := res.LastInsertId()
-	utils.HandleError(err)
-
-	task.ID = strconv.FormatInt(id, 10)
-	return &task
+func (r *TaskRepository) LoadUser(task *model.Task) {
+	database.DB.Preload("User").First(task)
 }

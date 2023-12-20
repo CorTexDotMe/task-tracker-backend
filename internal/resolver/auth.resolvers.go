@@ -11,19 +11,14 @@ import (
 	"task-tracker-backend/internal/model"
 )
 
-// CreateTask is the resolver for the createTask field.
-func (r *mutationResolver) CreateTask(ctx context.Context, input model.NewTask) (*model.Task, error) {
-	panic(fmt.Errorf("not implemented: CreateTask - createTask"))
-}
-
-// CreateUser is the resolver for the createUser field.
-func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*model.User, error) {
-	panic(fmt.Errorf("not implemented: CreateUser - createUser"))
-}
-
 // Login is the resolver for the login field.
-func (r *mutationResolver) Login(ctx context.Context, input model.Login) (string, error) {
+func (r *mutationResolver) Login(ctx context.Context, input model.Credentials) (string, error) {
 	panic(fmt.Errorf("not implemented: Login - login"))
+}
+
+// Register is the resolver for the register field.
+func (r *mutationResolver) Register(ctx context.Context, input model.Credentials) (string, error) {
+	panic(fmt.Errorf("not implemented: Register - register"))
 }
 
 // RefreshToken is the resolver for the refreshToken field.
@@ -31,16 +26,7 @@ func (r *mutationResolver) RefreshToken(ctx context.Context, intput model.Refres
 	panic(fmt.Errorf("not implemented: RefreshToken - refreshToken"))
 }
 
-// Tasks is the resolver for the tasks field.
-func (r *queryResolver) Tasks(ctx context.Context) ([]*model.Task, error) {
-	panic(fmt.Errorf("not implemented: Tasks - tasks"))
-}
-
 // Mutation returns graph.MutationResolver implementation.
 func (r *Resolver) Mutation() graph.MutationResolver { return &mutationResolver{r} }
 
-// Query returns graph.QueryResolver implementation.
-func (r *Resolver) Query() graph.QueryResolver { return &queryResolver{r} }
-
 type mutationResolver struct{ *Resolver }
-type queryResolver struct{ *Resolver }

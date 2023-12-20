@@ -3,5 +3,7 @@ package utils
 import "log"
 
 func HandleError(err error) {
-	log.Fatal(err)
+	if err != nil {
+		log.Fatal(err)
+	}
 }

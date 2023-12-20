@@ -1,15 +1,12 @@
 package database
 
 import (
-	"database/sql"
 	"fmt"
-	"log"
 	"task-tracker-backend/internal/database/postgres"
+	"task-tracker-backend/internal/model"
 	"task-tracker-backend/internal/utils"
 
-	"github.com/golang-migrate/migrate/v4"
-	migratePostgres "github.com/golang-migrate/migrate/v4/database/postgres"
-	_ "github.com/golang-migrate/migrate/v4/source/file"
+	"gorm.io/gorm"
 )
 
 // TODO move vars into .env file
@@ -23,29 +20,23 @@ const (
 	DATABASE_DRIVER_NAME = "postgres"
 )
 
-var DATABASE_CONNECTION *sql.DB
+var DB *gorm.DB
 
 func InitDB() {
 	connectionProperties := fmt.Sprintf(
 		"host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
 		HOST, PORT, USER, PASSWORD, DATABASE_NAME)
 
-	DATABASE_CONNECTION = postgres.ConnectToPostgress(connectionProperties)
+	DB = postgres.ConnectToPostgress(connectionProperties)
 }
 
 func CloseDB() error {
-	return DATABASE_CONNECTION.Close()
+	db, err := DB.DB()
+	utils.HandleError(err)
+
+	return db.Close()
 }
 
 func Migrate() {
-	utils.HandleError(DATABASE_CONNECTION.Ping())
-
-	driver, _ := migratePostgres.WithInstance(DATABASE_CONNECTION, &migratePostgres.Config{})
-	migratoin, migrateErr := migrate.NewWithDatabaseInstance(
-		MIGRATION_FILES_PATH, DATABASE_DRIVER_NAME, driver)
-	utils.HandleError(migrateErr)
-
-	if err := migratoin.Up(); err != nil && err != migrate.ErrNoChange {
-		log.Fatal(err)
-	}
+	DB.AutoMigrate(&model.User{})
 }

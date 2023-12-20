@@ -1,0 +1,29 @@
+type Task {
+  id: ID!
+  title: String!
+  description: String
+  status: String!
+  done: Boolean!
+  dateCreated: String!
+  dueDate: String,
+  user: User!
+}
+
+extend type Query {
+  tasksAll: [Task!]!
+  tasks(userId: ID!): [Task!]!
+  task(id: ID!): Task!
+}
+
+input NewTask {
+  title: String!
+  description: String
+  status: String
+  dueDate: String
+}
+
+extend type Mutation {
+  createTask(input: NewTask!): Task!
+  updateTask(id: ID!, title: String, description: String, status: String, dueDate: String): Task!
+  deleteTask(id: ID!) : Boolean!
+}
