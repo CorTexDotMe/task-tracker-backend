@@ -3,7 +3,7 @@ package database
 import (
 	"fmt"
 	"task-tracker-backend/internal/database/postgres"
-	"task-tracker-backend/internal/model"
+	model "task-tracker-backend/internal/models"
 	"task-tracker-backend/internal/utils"
 
 	"gorm.io/gorm"

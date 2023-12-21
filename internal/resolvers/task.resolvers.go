@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"strconv"
 	"task-tracker-backend/internal/graph"
-	"task-tracker-backend/internal/model"
+	"task-tracker-backend/internal/models"
 )
 
 // CreateTask is the resolver for the createTask field.

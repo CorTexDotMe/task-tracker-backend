@@ -7,7 +7,7 @@ import (
 
 	"task-tracker-backend/internal/database"
 	"task-tracker-backend/internal/graph"
-	"task-tracker-backend/internal/resolver"
+	resolver "task-tracker-backend/internal/resolvers"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"

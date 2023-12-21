@@ -2,7 +2,7 @@ package repositories
 
 import (
 	"task-tracker-backend/internal/database"
-	"task-tracker-backend/internal/model"
+	model "task-tracker-backend/internal/models"
 )
 
 type TaskRepository struct{}

@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"strconv"
 	"task-tracker-backend/internal/graph"
-	"task-tracker-backend/internal/model"
+	model "task-tracker-backend/internal/models"
 )
 
 // CreateUser is the resolver for the createUser field.
