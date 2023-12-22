@@ -20,14 +20,14 @@ func (r *UserRepository) Save(user *model.User) (*model.User, error) {
 }
 
 func (r *UserRepository) Get(id uint) (*model.User, error) {
-	var user *model.User
-	err := database.DB.First(user, id).Error
-	return user, err
+	var user model.User
+	err := database.DB.First(&user, id).Error
+	return &user, err
 }
 
 func (r *UserRepository) GetAll() ([]*model.User, error) {
 	var users []*model.User
-	err := database.DB.Find(users).Error
+	err := database.DB.Find(&users).Error
 	return users, err
 }
 

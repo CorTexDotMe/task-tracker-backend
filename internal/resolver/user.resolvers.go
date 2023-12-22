@@ -34,9 +34,7 @@ func (r *mutationResolver) UpdateUser(ctx context.Context, id string, username *
 	}
 
 	r.userRepository.Updates(updateUser)
-	//TODO check behaviour
-	//return r.userRepository.Get(uint(idParsed))
-	return updateUser, nil
+	return r.userRepository.Get(uint(idUint))
 }
 
 // DeleteUser is the resolver for the deleteUser field.
