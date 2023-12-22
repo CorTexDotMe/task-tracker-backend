@@ -6,10 +6,10 @@ package resolver
 
 import (
 	"context"
-	"fmt"
 	"strconv"
 	"task-tracker-backend/internal/graph"
 	model "task-tracker-backend/internal/models"
+	"task-tracker-backend/internal/utils"
 )
 
 // CreateUser is the resolver for the createUser field.
@@ -19,22 +19,46 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) 
 
 // UpdateUser is the resolver for the updateUser field.
 func (r *mutationResolver) UpdateUser(ctx context.Context, id string, username *string, password *string) (*model.User, error) {
-	panic(fmt.Errorf("not implemented: UpdateUser - updateUser"))
+	idUint, err := strconv.ParseUint(id, 10, 32)
+	utils.HandleError(err)
+
+	updateUser := &model.User{}
+	updateUser.ID = uint(idUint)
+
+	if username != nil && *username != "" {
+		updateUser.Name = *username
+	}
+
+	if password != nil && *password != "" {
+		updateUser.Password = *password
+	}
+
+	r.userRepository.Updates(updateUser)
+	//TODO check behaviour
+	//return r.userRepository.Get(uint(idParsed))
+	return updateUser, nil
 }
 
 // DeleteUser is the resolver for the deleteUser field.
 func (r *mutationResolver) DeleteUser(ctx context.Context, id string) (bool, error) {
-	panic(fmt.Errorf("not implemented: DeleteUser - deleteUser"))
+	idUint, err := strconv.ParseUint(id, 10, 32)
+	utils.HandleError(err)
+
+	r.userRepository.Remove(uint(idUint))
+	return true, nil
 }
 
 // UsersAll is the resolver for the usersAll field.
-func (r *queryResolver) UsersAll(ctx context.Context) ([]*model.Task, error) {
-	panic(fmt.Errorf("not implemented: UsersAll - usersAll"))
+func (r *queryResolver) UsersAll(ctx context.Context) ([]*model.User, error) {
+	return r.userRepository.GetAll()
 }
 
 // User is the resolver for the user field.
-func (r *queryResolver) User(ctx context.Context, id string) (*model.Task, error) {
-	panic(fmt.Errorf("not implemented: User - user"))
+func (r *queryResolver) User(ctx context.Context, id string) (*model.User, error) {
+	idUint, err := strconv.ParseUint(id, 10, 32)
+	utils.HandleError(err)
+
+	return r.userRepository.Get(uint(idUint))
 }
 
 // ID is the resolver for the id field.
