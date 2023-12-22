@@ -8,7 +8,7 @@ import (
 	"context"
 	"fmt"
 	"task-tracker-backend/internal/graph"
-	model "task-tracker-backend/internal/models"
+	"task-tracker-backend/internal/model"
 )
 
 // Login is the resolver for the login field.

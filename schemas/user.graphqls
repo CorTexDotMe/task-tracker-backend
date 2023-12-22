@@ -5,8 +5,8 @@ type User {
 }
 
 extend type Query {
-  usersAll: [Task!]!
-  user(id: ID!): Task!
+  usersAll: [User!]!
+  user(id: ID!): User!
 }
 
 input NewUser {

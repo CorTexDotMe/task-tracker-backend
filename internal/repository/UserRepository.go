@@ -1,8 +1,8 @@
-package repositories
+package repository
 
 import (
 	"task-tracker-backend/internal/database"
-	model "task-tracker-backend/internal/models"
+	"task-tracker-backend/internal/model"
 )
 
 type UserRepository struct{}

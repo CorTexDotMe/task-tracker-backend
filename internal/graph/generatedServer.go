@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"sync"
 	"sync/atomic"
-	"task-tracker-backend/internal/models"
+	"task-tracker-backend/internal/model"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
@@ -101,8 +101,8 @@ type QueryResolver interface {
 	TasksAll(ctx context.Context) ([]*model.Task, error)
 	Tasks(ctx context.Context, userID string) ([]*model.Task, error)
 	Task(ctx context.Context, id string) (*model.Task, error)
-	UsersAll(ctx context.Context) ([]*model.Task, error)
-	User(ctx context.Context, id string) (*model.Task, error)
+	UsersAll(ctx context.Context) ([]*model.User, error)
+	User(ctx context.Context, id string) (*model.User, error)
 }
 type TaskResolver interface {
 	ID(ctx context.Context, obj *model.Task) (string, error)
@@ -529,8 +529,8 @@ extend type Mutation {
 }
 
 extend type Query {
-  usersAll: [Task!]!
-  user(id: ID!): Task!
+  usersAll: [User!]!
+  user(id: ID!): User!
 }
 
 input NewUser {
@@ -1618,9 +1618,9 @@ func (ec *executionContext) _Query_usersAll(ctx context.Context, field graphql.C
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*model.Task)
+	res := resTmp.([]*model.User)
 	fc.Result = res
-	return ec.marshalNTask2ᚕᚖtaskᚑtrackerᚑbackendᚋinternalᚋmodelᚐTaskᚄ(ctx, field.Selections, res)
+	return ec.marshalNUser2ᚕᚖtaskᚑtrackerᚑbackendᚋinternalᚋmodelᚐUserᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_usersAll(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1632,23 +1632,13 @@ func (ec *executionContext) fieldContext_Query_usersAll(ctx context.Context, fie
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "id":
-				return ec.fieldContext_Task_id(ctx, field)
-			case "title":
-				return ec.fieldContext_Task_title(ctx, field)
-			case "description":
-				return ec.fieldContext_Task_description(ctx, field)
-			case "status":
-				return ec.fieldContext_Task_status(ctx, field)
-			case "done":
-				return ec.fieldContext_Task_done(ctx, field)
-			case "dateCreated":
-				return ec.fieldContext_Task_dateCreated(ctx, field)
-			case "dueDate":
-				return ec.fieldContext_Task_dueDate(ctx, field)
-			case "user":
-				return ec.fieldContext_Task_user(ctx, field)
+				return ec.fieldContext_User_id(ctx, field)
+			case "name":
+				return ec.fieldContext_User_name(ctx, field)
+			case "password":
+				return ec.fieldContext_User_password(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type Task", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
 	}
 	return fc, nil
@@ -1680,9 +1670,9 @@ func (ec *executionContext) _Query_user(ctx context.Context, field graphql.Colle
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.Task)
+	res := resTmp.(*model.User)
 	fc.Result = res
-	return ec.marshalNTask2ᚖtaskᚑtrackerᚑbackendᚋinternalᚋmodelᚐTask(ctx, field.Selections, res)
+	return ec.marshalNUser2ᚖtaskᚑtrackerᚑbackendᚋinternalᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_user(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1694,23 +1684,13 @@ func (ec *executionContext) fieldContext_Query_user(ctx context.Context, field g
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "id":
-				return ec.fieldContext_Task_id(ctx, field)
-			case "title":
-				return ec.fieldContext_Task_title(ctx, field)
-			case "description":
-				return ec.fieldContext_Task_description(ctx, field)
-			case "status":
-				return ec.fieldContext_Task_status(ctx, field)
-			case "done":
-				return ec.fieldContext_Task_done(ctx, field)
-			case "dateCreated":
-				return ec.fieldContext_Task_dateCreated(ctx, field)
-			case "dueDate":
-				return ec.fieldContext_Task_dueDate(ctx, field)
-			case "user":
-				return ec.fieldContext_Task_user(ctx, field)
+				return ec.fieldContext_User_id(ctx, field)
+			case "name":
+				return ec.fieldContext_User_name(ctx, field)
+			case "password":
+				return ec.fieldContext_User_password(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type Task", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
 	}
 	defer func() {
@@ -5254,6 +5234,50 @@ func (ec *executionContext) marshalNTask2ᚖtaskᚑtrackerᚑbackendᚋinternal�
 
 func (ec *executionContext) marshalNUser2taskᚑtrackerᚑbackendᚋinternalᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v model.User) graphql.Marshaler {
 	return ec._User(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNUser2ᚕᚖtaskᚑtrackerᚑbackendᚋinternalᚋmodelᚐUserᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.User) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNUser2ᚖtaskᚑtrackerᚑbackendᚋinternalᚋmodelᚐUser(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
 }
 
 func (ec *executionContext) marshalNUser2ᚖtaskᚑtrackerᚑbackendᚋinternalᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v *model.User) graphql.Marshaler {

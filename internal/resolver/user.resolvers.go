@@ -8,7 +8,7 @@ import (
 	"context"
 	"strconv"
 	"task-tracker-backend/internal/graph"
-	model "task-tracker-backend/internal/models"
+	"task-tracker-backend/internal/model"
 	"task-tracker-backend/internal/utils"
 )
 
