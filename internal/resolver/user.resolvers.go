@@ -19,11 +19,11 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) 
 
 // UpdateUser is the resolver for the updateUser field.
 func (r *mutationResolver) UpdateUser(ctx context.Context, id string, username *string, password *string) (*model.User, error) {
-	idUint, err := strconv.ParseUint(id, 10, 32)
+	idUint, err := utils.ParseStringToUIntGT0(id)
 	utils.HandleError(err)
 
 	updateUser := &model.User{}
-	updateUser.ID = uint(idUint)
+	updateUser.ID = idUint
 
 	if username != nil && *username != "" {
 		updateUser.Name = *username
@@ -34,15 +34,15 @@ func (r *mutationResolver) UpdateUser(ctx context.Context, id string, username *
 	}
 
 	r.userRepository.Updates(updateUser)
-	return r.userRepository.Get(uint(idUint))
+	return r.userRepository.Get(idUint)
 }
 
 // DeleteUser is the resolver for the deleteUser field.
 func (r *mutationResolver) DeleteUser(ctx context.Context, id string) (bool, error) {
-	idUint, err := strconv.ParseUint(id, 10, 32)
+	idUint, err := utils.ParseStringToUIntGT0(id)
 	utils.HandleError(err)
 
-	r.userRepository.Remove(uint(idUint))
+	r.userRepository.Remove(idUint)
 	return true, nil
 }
 
@@ -53,10 +53,10 @@ func (r *queryResolver) UsersAll(ctx context.Context) ([]*model.User, error) {
 
 // User is the resolver for the user field.
 func (r *queryResolver) User(ctx context.Context, id string) (*model.User, error) {
-	idUint, err := strconv.ParseUint(id, 10, 32)
+	idUint, err := utils.ParseStringToUIntGT0(id)
 	utils.HandleError(err)
 
-	return r.userRepository.Get(uint(idUint))
+	return r.userRepository.Get(idUint)
 }
 
 // ID is the resolver for the id field.

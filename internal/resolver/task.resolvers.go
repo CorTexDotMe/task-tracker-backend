@@ -6,41 +6,83 @@ package resolver
 
 import (
 	"context"
-	"fmt"
 	"strconv"
 	"task-tracker-backend/internal/graph"
 	"task-tracker-backend/internal/model"
+	"task-tracker-backend/internal/utils"
+	"time"
 )
 
 // CreateTask is the resolver for the createTask field.
 func (r *mutationResolver) CreateTask(ctx context.Context, input model.NewTask) (*model.Task, error) {
 	//TODO get user from context
-	return r.taskRepository.SaveFromInput(input, &model.User{})
+	user, _ := r.userRepository.Get(1)
+	return r.taskRepository.SaveFromInput(input, user)
 }
 
 // UpdateTask is the resolver for the updateTask field.
 func (r *mutationResolver) UpdateTask(ctx context.Context, id string, title *string, description *string, status *string, dueDate *string) (*model.Task, error) {
-	panic(fmt.Errorf("not implemented: UpdateTask - updateTask"))
+	idUint, err := utils.ParseStringToUIntGT0(id)
+	utils.HandleError(err)
+
+	updateTask := &model.Task{}
+	updateTask.ID = idUint
+
+	if title != nil && *title != "" {
+		updateTask.Title = *title
+	}
+
+	if description != nil {
+		updateTask.Description = description
+	}
+
+	if status != nil && *status != "" {
+		updateTask.Status = *status
+	}
+
+	if dueDate != nil {
+		if *dueDate == "" {
+			updateTask.DueDate = nil
+		} else {
+			time, err := time.Parse("01/01/2000", *dueDate)
+			if err == nil {
+				updateTask.DueDate = &time
+			}
+		}
+	}
+
+	r.taskRepository.Updates(updateTask)
+	return r.taskRepository.Get(idUint)
 }
 
 // DeleteTask is the resolver for the deleteTask field.
 func (r *mutationResolver) DeleteTask(ctx context.Context, id string) (bool, error) {
-	panic(fmt.Errorf("not implemented: DeleteTask - deleteTask"))
+	idUint, err := utils.ParseStringToUIntGT0(id)
+	utils.HandleError(err)
+
+	r.taskRepository.Remove(idUint)
+	return true, nil
 }
 
 // TasksAll is the resolver for the tasksAll field.
 func (r *queryResolver) TasksAll(ctx context.Context) ([]*model.Task, error) {
-	panic(fmt.Errorf("not implemented: TasksAll - tasksAll"))
+	return r.taskRepository.GetAll()
 }
 
 // Tasks is the resolver for the tasks field.
 func (r *queryResolver) Tasks(ctx context.Context, userID string) ([]*model.Task, error) {
-	panic(fmt.Errorf("not implemented: Tasks - tasks"))
+	idUint, err := utils.ParseStringToUIntGT0(userID)
+	utils.HandleError(err)
+
+	return r.taskRepository.GetByUserId(idUint)
 }
 
 // Task is the resolver for the task field.
 func (r *queryResolver) Task(ctx context.Context, id string) (*model.Task, error) {
-	panic(fmt.Errorf("not implemented: Task - task"))
+	idUint, err := utils.ParseStringToUIntGT0(id)
+	utils.HandleError(err)
+
+	return r.taskRepository.Get(idUint)
 }
 
 // ID is the resolver for the id field.
