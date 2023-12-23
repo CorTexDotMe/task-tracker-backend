@@ -38,5 +38,5 @@ func CloseDB() error {
 }
 
 func Migrate() {
-	DB.AutoMigrate(&model.User{})
+	DB.AutoMigrate(&model.User{}, &model.Task{})
 }

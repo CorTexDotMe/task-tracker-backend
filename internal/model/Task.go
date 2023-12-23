@@ -13,7 +13,8 @@ type Task struct {
 	Status      string     `json:"status"`
 	Done        bool       `json:"done"`
 	DueDate     *time.Time `json:"dueDate,omitempty"`
-	User        *User      `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"user"`
+	UserId      uint       `json:"userId"`
+	User        *User      `gorm:"reference:UserId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"user"`
 }
 
 type NewTask struct {

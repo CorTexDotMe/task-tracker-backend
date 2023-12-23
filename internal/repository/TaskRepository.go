@@ -30,14 +30,36 @@ func (r *TaskRepository) Save(task *model.Task) (*model.Task, error) {
 	return task, err
 }
 
-func (r *TaskRepository) LoadUser(task *model.Task) {
-	database.DB.Preload("User").First(task)
+func (r *TaskRepository) Get(id uint) (*model.Task, error) {
+	var task model.Task
+	err := database.DB.First(&task, id).Error
+	return &task, err
+}
+
+func (r *TaskRepository) GetByUserId(userId uint) ([]*model.Task, error) {
+	var tasks []*model.Task
+	err := database.DB.Find(&tasks, model.Task{UserId: userId}).Error
+	return tasks, err
+}
+
+// FOR DEBUG
+func (r *TaskRepository) GetAll() ([]*model.Task, error) {
+	var tasks []*model.Task
+	err := database.DB.Find(&tasks).Error
+	return tasks, err
+}
+
+func (r *TaskRepository) Updates(values *model.Task) error {
+	// TODO return task
+	// task := &model.Task{}
+	// database.DB.Model(task).Clauses(clause.Returning{}).Where("id = ?", "").Updates(values)
+	return database.DB.Updates(values).Error
 }
 
 func (r *TaskRepository) Remove(id uint) error {
 	return database.DB.Delete(&model.Task{}, id).Error
 }
 
-func (r *TaskRepository) Get(id uint) error {
-	return database.DB.First(&model.Task{}, id).Error
+func (r *TaskRepository) LoadUser(task *model.Task) {
+	database.DB.Preload("User").First(task)
 }
