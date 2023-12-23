@@ -4,7 +4,7 @@ schema:
 
 # Where should the generated server code go?
 exec:
-  filename: internal/graph/generatedServer.go
+  filename: internal/graph/generated_server.go
   package: graph
 
 # Uncomment to enable federation
@@ -14,7 +14,7 @@ exec:
 
 # Where should any generated models go?
 model:
-  filename: internal/model/generatedModels.go
+  filename: internal/model/generated_models.go
   package: model
 
 # Where should the resolver implementations go?
@@ -22,7 +22,7 @@ resolver:
   layout: follow-schema
   dir: internal/resolver
   package: resolver
-  filename_template: "{name}.resolvers.go"
+  filename_template: "{name}_resolver.go"
   # Optional: turn on to not generate template comments above resolvers
   # omit_template_comment: false
 

@@ -8,9 +8,11 @@ import (
 	"task-tracker-backend/internal/database"
 	"task-tracker-backend/internal/graph"
 	"task-tracker-backend/internal/resolver"
+	"task-tracker-backend/internal/security"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/go-chi/chi"
 )
 
 // TODO env for main port
@@ -22,14 +24,16 @@ func Run() {
 		port = defaultPort
 	}
 
+	router := chi.NewRouter()
+	router.Use(security.Filter())
+
 	database.InitDB()
 	// defer database.CloseDB()
 	database.Migrate()
 
-	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &resolver.Resolver{}}))
-
-	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	http.Handle("/query", srv)
+	server := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &resolver.Resolver{}}))
+	router.Handle("/", playground.Handler("GraphQL playground", "/query"))
+	router.Handle("/query", server)
 
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
