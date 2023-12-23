@@ -6,24 +6,41 @@ package resolver
 
 import (
 	"context"
-	"fmt"
+	"errors"
 	"task-tracker-backend/internal/graph"
 	"task-tracker-backend/internal/model"
+	"task-tracker-backend/internal/utils"
 )
 
 // Login is the resolver for the login field.
 func (r *mutationResolver) Login(ctx context.Context, input model.Credentials) (string, error) {
-	panic(fmt.Errorf("not implemented: Login - login"))
+	authenticated := r.userRepository.Authenticate(input)
+
+	if !authenticated {
+		return "", errors.New("wrong password or username")
+	}
+
+	token, err := utils.GenerateToken(input.Username)
+	return token, err
 }
 
 // Register is the resolver for the register field.
 func (r *mutationResolver) Register(ctx context.Context, input model.Credentials) (string, error) {
-	panic(fmt.Errorf("not implemented: Register - register"))
+	user, err := r.userRepository.SaveFromInput(model.CredsToNewUser(input))
+	utils.HandleError(err)
+
+	token, err := utils.GenerateToken(user.Name)
+	return token, err
 }
 
 // RefreshToken is the resolver for the refreshToken field.
-func (r *mutationResolver) RefreshToken(ctx context.Context, intput model.RefreshToken) (string, error) {
-	panic(fmt.Errorf("not implemented: RefreshToken - refreshToken"))
+func (r *mutationResolver) RefreshToken(ctx context.Context, input model.RefreshToken) (string, error) {
+	username, err := utils.ParseToken(input.Token)
+	utils.HandleError(err)
+
+	token, err := utils.GenerateToken(username)
+	utils.HandleError(err)
+	return token, nil
 }
 
 // Mutation returns graph.MutationResolver implementation.

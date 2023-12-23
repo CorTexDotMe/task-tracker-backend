@@ -3,6 +3,7 @@ package repository
 import (
 	"task-tracker-backend/internal/database"
 	"task-tracker-backend/internal/model"
+	"task-tracker-backend/internal/utils"
 )
 
 type UserRepository struct{}
@@ -46,4 +47,12 @@ func (r *UserRepository) Updates(values *model.User) error {
 
 func (r *UserRepository) Remove(id uint) error {
 	return database.DB.Delete(&model.User{}, id).Error
+}
+
+func (r *UserRepository) Authenticate(creds model.Credentials) bool {
+	user, err := r.GetByUsername(creds.Username)
+	utils.HandleError(err)
+
+	//TODO normal encryption
+	return user.Password == creds.Password
 }

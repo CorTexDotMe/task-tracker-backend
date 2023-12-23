@@ -54,7 +54,7 @@ type ComplexityRoot struct {
 		DeleteTask   func(childComplexity int, id string) int
 		DeleteUser   func(childComplexity int, id string) int
 		Login        func(childComplexity int, input model.Credentials) int
-		RefreshToken func(childComplexity int, intput model.RefreshToken) int
+		RefreshToken func(childComplexity int, input model.RefreshToken) int
 		Register     func(childComplexity int, input model.Credentials) int
 		UpdateTask   func(childComplexity int, id string, title *string, description *string, status *string, dueDate *string) int
 		UpdateUser   func(childComplexity int, id string, username *string, password *string) int
@@ -89,7 +89,7 @@ type ComplexityRoot struct {
 type MutationResolver interface {
 	Login(ctx context.Context, input model.Credentials) (string, error)
 	Register(ctx context.Context, input model.Credentials) (string, error)
-	RefreshToken(ctx context.Context, intput model.RefreshToken) (string, error)
+	RefreshToken(ctx context.Context, input model.RefreshToken) (string, error)
 	CreateTask(ctx context.Context, input model.NewTask) (*model.Task, error)
 	UpdateTask(ctx context.Context, id string, title *string, description *string, status *string, dueDate *string) (*model.Task, error)
 	DeleteTask(ctx context.Context, id string) (bool, error)
@@ -204,7 +204,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.RefreshToken(childComplexity, args["intput"].(model.RefreshToken)), true
+		return e.complexity.Mutation.RefreshToken(childComplexity, args["input"].(model.RefreshToken)), true
 
 	case "Mutation.register":
 		if e.complexity.Mutation.Register == nil {
@@ -484,13 +484,13 @@ var sources = []*ast.Source{
 }
 
 input RefreshToken {
-  token: String
+  token: String!
 }
 
 extend type Mutation {
   login(input: Credentials!): String!
   register(input: Credentials!): String!
-  refreshToken(intput: RefreshToken!): String!
+  refreshToken(input: RefreshToken!): String!
 }
 `, BuiltIn: false},
 	{Name: "../../schemas/task.graphqls", Input: `type Task {
@@ -629,14 +629,14 @@ func (ec *executionContext) field_Mutation_refreshToken_args(ctx context.Context
 	var err error
 	args := map[string]interface{}{}
 	var arg0 model.RefreshToken
-	if tmp, ok := rawArgs["intput"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("intput"))
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNRefreshToken2taskᚑtrackerᚑbackendᚋinternalᚋmodelᚐRefreshToken(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["intput"] = arg0
+	args["input"] = arg0
 	return args, nil
 }
 
@@ -961,7 +961,7 @@ func (ec *executionContext) _Mutation_refreshToken(ctx context.Context, field gr
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().RefreshToken(rctx, fc.Args["intput"].(model.RefreshToken))
+		return ec.resolvers.Mutation().RefreshToken(rctx, fc.Args["input"].(model.RefreshToken))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4227,7 +4227,7 @@ func (ec *executionContext) unmarshalInputRefreshToken(ctx context.Context, obj 
 		switch k {
 		case "token":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("token"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
