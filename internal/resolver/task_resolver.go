@@ -6,9 +6,11 @@ package resolver
 
 import (
 	"context"
+	"errors"
 	"strconv"
 	"task-tracker-backend/internal/graph"
 	"task-tracker-backend/internal/model"
+	"task-tracker-backend/internal/security"
 	"task-tracker-backend/internal/utils"
 	"time"
 )
@@ -16,7 +18,11 @@ import (
 // CreateTask is the resolver for the createTask field.
 func (r *mutationResolver) CreateTask(ctx context.Context, input model.NewTask) (*model.Task, error) {
 	//TODO get user from context
-	user, _ := r.userRepository.Get(1)
+	user := security.ForContext(ctx)
+	if user == nil {
+		return &model.Task{}, errors.New("access denied")
+	}
+
 	return r.taskRepository.SaveFromInput(input, user)
 }
 
