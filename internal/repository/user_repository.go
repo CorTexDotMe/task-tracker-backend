@@ -25,6 +25,12 @@ func (r *UserRepository) Get(id uint) (*model.User, error) {
 	return &user, err
 }
 
+func (r *UserRepository) GetByUsername(username string) (*model.User, error) {
+	user := model.User{Name: username}
+	err := database.DB.First(&user).Error
+	return &user, err
+}
+
 func (r *UserRepository) GetAll() ([]*model.User, error) {
 	var users []*model.User
 	err := database.DB.Find(&users).Error
