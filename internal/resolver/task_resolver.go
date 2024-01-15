@@ -17,7 +17,6 @@ import (
 
 // CreateTask is the resolver for the createTask field.
 func (r *mutationResolver) CreateTask(ctx context.Context, input model.NewTask) (*model.Task, error) {
-	//TODO get user from context
 	user := security.ForContext(ctx)
 	if user == nil {
 		return &model.Task{}, errors.New("access denied")
@@ -50,7 +49,8 @@ func (r *mutationResolver) UpdateTask(ctx context.Context, id string, title *str
 		if *dueDate == "" {
 			updateTask.DueDate = nil
 		} else {
-			time, err := time.Parse("01/01/2000", *dueDate)
+			//TODO return error if time in wrong format
+			time, err := time.Parse(time.RFC3339, *dueDate)
 			if err == nil {
 				updateTask.DueDate = &time
 			}
@@ -66,8 +66,8 @@ func (r *mutationResolver) DeleteTask(ctx context.Context, id string) (bool, err
 	idUint, err := utils.ParseStringToUIntGT0(id)
 	utils.HandleError(err)
 
-	r.taskRepository.Remove(idUint)
-	return true, nil
+	err = r.taskRepository.Remove(idUint)
+	return err == nil, err
 }
 
 // TasksAll is the resolver for the tasksAll field.
@@ -98,14 +98,15 @@ func (r *taskResolver) ID(ctx context.Context, obj *model.Task) (string, error) 
 
 // DateCreated is the resolver for the dateCreated field.
 func (r *taskResolver) DateCreated(ctx context.Context, obj *model.Task) (string, error) {
-	return obj.CreatedAt.Format("01/01/2000"), nil
+	return obj.CreatedAt.Format(time.RFC3339), nil
 }
 
 // DueDate is the resolver for the dueDate field.
 func (r *taskResolver) DueDate(ctx context.Context, obj *model.Task) (*string, error) {
 	var date *string
 	if obj.DueDate != nil {
-		*date = obj.DueDate.Format("01/01/2000")
+		dateVal := obj.DueDate.Format(time.RFC3339)
+		date = &dateVal
 	}
 	return date, nil
 }

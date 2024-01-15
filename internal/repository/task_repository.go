@@ -3,17 +3,26 @@ package repository
 import (
 	"task-tracker-backend/internal/database"
 	"task-tracker-backend/internal/model"
+	"time"
 )
 
 type TaskRepository struct{}
 
 func (r *TaskRepository) TaskFromNewTask(newTask model.NewTask, user *model.User) *model.Task {
+	var parsedDueDate *time.Time
+	if newTask.DueDate != nil {
+		parsed, err := time.Parse(time.RFC3339, *newTask.DueDate)
+		if err == nil {
+			parsedDueDate = &parsed
+		}
+	}
+
 	return &model.Task{
 		Title:       newTask.Title,
 		Description: newTask.Description,
 		Status:      *newTask.Status,
 		Done:        false,
-		DueDate:     nil,
+		DueDate:     parsedDueDate,
 		User:        user,
 	}
 }
