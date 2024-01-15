@@ -33,7 +33,7 @@ func Filter() func(http.Handler) http.Handler {
 				next.ServeHTTP(w, r)
 				return
 			}
-			ctx := context.WithValue(r.Context(), userCtxKey, &user) // may not work cause user is a pointer already
+			ctx := context.WithValue(r.Context(), userCtxKey, user) // may not work cause user is a pointer already
 
 			r = r.WithContext(ctx)
 			next.ServeHTTP(w, r)
