@@ -35,6 +35,8 @@ func Run() {
 
 	router.Group(func(r chi.Router) {
 		r.Handle("/", playground.Handler("GraphQL playground", "/query"))
+		r.Post("/login", resolver.Login)
+		r.Post("/register", resolver.Register)
 	})
 
 	server := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &resolver.Resolver{}}))

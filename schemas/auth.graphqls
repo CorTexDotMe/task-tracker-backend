@@ -1,14 +1,7 @@
-input Credentials {
-  username: String!
-  password: String!
-}
-
 input RefreshToken {
   token: String!
 }
 
 extend type Mutation {
-  login(input: Credentials!): String!
-  register(input: Credentials!): String!
   refreshToken(input: RefreshToken!): String!
 }
