@@ -8,6 +8,7 @@ import (
 
 func HandleError(err error) {
 	if err != nil {
+		//TODO panic and recover, do not stop the server
 		log.Fatal(err)
 	}
 }
