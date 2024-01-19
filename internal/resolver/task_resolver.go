@@ -9,15 +9,15 @@ import (
 	"errors"
 	"strconv"
 	"task-tracker-backend/internal/graph"
+	"task-tracker-backend/internal/middleware"
 	"task-tracker-backend/internal/model"
-	"task-tracker-backend/internal/security"
 	"task-tracker-backend/internal/utils"
 	"time"
 )
 
 // CreateTask is the resolver for the createTask field.
 func (r *mutationResolver) CreateTask(ctx context.Context, input model.NewTask) (*model.Task, error) {
-	user := security.ForContext(ctx)
+	user := middleware.GetUserFromContext(ctx)
 	if user == nil {
 		return &model.Task{}, errors.New("access denied")
 	}

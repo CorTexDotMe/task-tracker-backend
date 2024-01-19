@@ -1,48 +1,40 @@
-package security
+package middleware
 
 import (
 	"context"
 	"net/http"
-	"task-tracker-backend/internal/model"
 	"task-tracker-backend/internal/repository"
 	"task-tracker-backend/internal/utils"
 )
 
-var userCtxKey = &contextKey{"user"}
+// TODO singleton repository
 var userRepository = repository.UserRepository{}
 
-type contextKey struct {
-	name string
-}
-
-func Filter() func(http.Handler) http.Handler {
+func OnlyAuthenticated() func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			header := r.Header.Get("Authorization")
 
 			if header == "" {
-				next.ServeHTTP(w, r)
+				http.Error(w, "No Authorization provided", http.StatusUnauthorized)
 				return
 			}
 
 			username, err := utils.ParseToken(header)
-			utils.HandleError(err)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusUnauthorized)
+				return
+			}
 
 			user, err := userRepository.GetByUsername(username)
 			if err != nil {
-				next.ServeHTTP(w, r)
+				http.Error(w, "Wrong authorization token", http.StatusUnauthorized)
 				return
 			}
-			ctx := context.WithValue(r.Context(), userCtxKey, user) // may not work cause user is a pointer already
+			ctx := context.WithValue(r.Context(), userCtxKey, user)
 
 			r = r.WithContext(ctx)
 			next.ServeHTTP(w, r)
 		})
 	}
-}
-
-// ForContext finds the user from the context. REQUIRES Middleware to have run.
-func ForContext(ctx context.Context) *model.User {
-	user, _ := ctx.Value(userCtxKey).(*model.User)
-	return user
 }
