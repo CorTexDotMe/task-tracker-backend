@@ -1,15 +1,13 @@
 package utils
 
 import (
+	"os"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
 )
 
-// TODO move to env
-var (
-	SecretKey = []byte("secret")
-)
+var secretKey = []byte(os.Getenv("JWT_SECRET"))
 
 func GenerateToken(username string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
@@ -17,7 +15,7 @@ func GenerateToken(username string) (string, error) {
 		"exp":      time.Now().Add(time.Hour * 24).Unix(),
 	})
 
-	tokenStr, err := token.SignedString(SecretKey)
+	tokenStr, err := token.SignedString(secretKey)
 	HandleError(err)
 
 	return tokenStr, nil
@@ -25,7 +23,7 @@ func GenerateToken(username string) (string, error) {
 
 func ParseToken(tokenStr string) (string, error) {
 	token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
-		return SecretKey, nil
+		return secretKey, nil
 	})
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {

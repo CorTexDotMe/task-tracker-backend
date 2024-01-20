@@ -9,6 +9,10 @@ import (
 	"task-tracker-backend/internal/graph"
 	"task-tracker-backend/internal/middleware"
 	"task-tracker-backend/internal/resolver"
+	"task-tracker-backend/internal/utils"
+
+	"github.com/joho/godotenv"
+	_ "github.com/joho/godotenv/autoload"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
@@ -16,14 +20,10 @@ import (
 	chiMiddleware "github.com/go-chi/chi/middleware"
 )
 
-// TODO env for main port
-const defaultPort = "8080"
-
 func Run() {
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = defaultPort
-	}
+	err := godotenv.Load("../../.env")
+	utils.HandleError(err)
+	port := os.Getenv("SERVER_PORT")
 
 	database.InitDB()
 	database.Migrate()

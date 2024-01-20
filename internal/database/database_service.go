@@ -2,6 +2,8 @@ package database
 
 import (
 	"fmt"
+	"os"
+	"strconv"
 	"task-tracker-backend/internal/database/postgres"
 	"task-tracker-backend/internal/model"
 	"task-tracker-backend/internal/utils"
@@ -9,23 +11,19 @@ import (
 	"gorm.io/gorm"
 )
 
-// TODO move vars into .env file
-const (
-	HOST                 = "host.docker.internal"
-	PORT                 = 5432
-	USER                 = "postgres"
-	PASSWORD             = "password"
-	DATABASE_NAME        = "task-tracker"
-	MIGRATION_FILES_PATH = "file://../../internal/database/migrations"
-	DATABASE_DRIVER_NAME = "postgres"
-)
-
 var DB *gorm.DB
 
 func InitDB() {
+	port, err := strconv.Atoi(os.Getenv("DB_PORT"))
+	utils.HandleError(err)
+
 	connectionProperties := fmt.Sprintf(
 		"host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
-		HOST, PORT, USER, PASSWORD, DATABASE_NAME)
+		os.Getenv("DB_HOST"),
+		port,
+		os.Getenv("DB_USERNAME"),
+		os.Getenv("DB_PASSWORD"),
+		os.Getenv("DB_NAME"))
 
 	DB = postgres.ConnectToPostgress(connectionProperties)
 }
