@@ -8,8 +8,10 @@ import (
 	"task-tracker-backend/internal/utils"
 )
 
+// TODO singleton
 var userRepository = repository.UserRepository{}
 
+// Return jwt token if request body has correct User credentials in form-data format
 func Login(w http.ResponseWriter, r *http.Request) {
 	input := model.Credentials{Username: r.FormValue("username"), Password: r.FormValue("password")}
 	authenticated := userRepository.Authenticate(input)
@@ -25,14 +27,14 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 	json.NewEncoder(w).Encode(token)
 }
+
+// Create new user with credentials from request body in form-data format.
+//
+// Return created user as json
 func Register(w http.ResponseWriter, r *http.Request) {
 	input := model.Credentials{Username: r.FormValue("username"), Password: r.FormValue("password")}
 	user, err := userRepository.SaveFromInput(model.CredsToNewUser(input))
 	utils.HandleError(err) // TODO dont panic
 
-	token, err := utils.GenerateToken(user.Name)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
-	json.NewEncoder(w).Encode(token)
+	json.NewEncoder(w).Encode(user)
 }

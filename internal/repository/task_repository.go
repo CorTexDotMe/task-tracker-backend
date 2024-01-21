@@ -8,6 +8,7 @@ import (
 
 type TaskRepository struct{}
 
+// Convert object of type model.NewTask to model.Task
 func (r *TaskRepository) TaskFromNewTask(newTask model.NewTask, user *model.User) *model.Task {
 	var parsedDueDate *time.Time
 	if newTask.DueDate != nil {
@@ -27,7 +28,7 @@ func (r *TaskRepository) TaskFromNewTask(newTask model.NewTask, user *model.User
 	}
 }
 
-// Creates task from NewTask input
+// Save Task to database from NewTask data
 func (r *TaskRepository) SaveFromInput(input model.NewTask, user *model.User) (*model.Task, error) {
 	task := r.TaskFromNewTask(input, user)
 	return r.Save(task)
@@ -51,7 +52,7 @@ func (r *TaskRepository) GetByUserId(userId uint) ([]*model.Task, error) {
 	return tasks, err
 }
 
-// FOR DEBUG
+// FOR DEBUG ONLY
 func (r *TaskRepository) GetAll() ([]*model.Task, error) {
 	var tasks []*model.Task
 	err := database.DB.Find(&tasks).Error
@@ -69,6 +70,7 @@ func (r *TaskRepository) Remove(id uint) error {
 	return database.DB.Delete(&model.Task{}, id).Error
 }
 
+// Eagerly load User field of Task object
 func (r *TaskRepository) LoadUser(task *model.Task) {
 	database.DB.Preload("User").First(task)
 }

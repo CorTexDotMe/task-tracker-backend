@@ -3,12 +3,11 @@ package repository
 import (
 	"task-tracker-backend/internal/database"
 	"task-tracker-backend/internal/model"
-	"task-tracker-backend/internal/utils"
 )
 
 type UserRepository struct{}
 
-// Creates user from NewUser input
+// Save User to database from data of NewUser
 func (r *UserRepository) SaveFromInput(input model.NewUser) (*model.User, error) {
 	user := &model.User{Name: input.Username, Password: input.Password}
 	return r.Save(user)
@@ -49,10 +48,10 @@ func (r *UserRepository) Remove(id uint) error {
 	return database.DB.Delete(&model.User{}, id).Error
 }
 
+// Check if database has User with provided credentials
 func (r *UserRepository) Authenticate(creds model.Credentials) bool {
 	user, err := r.GetByUsername(creds.Username)
-	utils.HandleError(err)
 
 	//TODO normal encryption
-	return user.Password == creds.Password
+	return err == nil && user.Password == creds.Password
 }

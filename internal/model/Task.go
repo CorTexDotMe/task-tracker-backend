@@ -6,6 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// Default Task entity
 type Task struct {
 	gorm.Model
 	Title       string     `json:"title"`
@@ -17,6 +18,7 @@ type Task struct {
 	User        *User      `gorm:"reference:UserId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"user"`
 }
 
+// DTO object with data to create new Task
 type NewTask struct {
 	Title       string  `json:"title"`
 	Description *string `json:"description,omitempty"`

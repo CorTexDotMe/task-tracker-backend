@@ -20,6 +20,10 @@ import (
 	chiMiddleware "github.com/go-chi/chi/middleware"
 )
 
+// Run the server
+//
+// Load dotenv properties, initialize database, define router
+// with routes and middleware, and start the server
 func Run() {
 	err := godotenv.Load("../../.env")
 	utils.HandleError(err)
