@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"os"
 
-	"task-tracker-backend/internal/database"
 	"task-tracker-backend/internal/graph"
 	"task-tracker-backend/internal/middleware"
 	"task-tracker-backend/internal/resolver"
@@ -29,9 +28,6 @@ func Run() {
 	utils.HandleError(err)
 	port := os.Getenv("SERVER_PORT")
 
-	database.InitDB()
-	database.Migrate()
-
 	router := chi.NewRouter()
 	router.Use(chiMiddleware.RequestID)
 	router.Use(chiMiddleware.Recoverer)
@@ -43,7 +39,7 @@ func Run() {
 		r.Post("/register", resolver.Register)
 	})
 
-	server := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &resolver.Resolver{}}))
+	server := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: resolver.NewResolver()}))
 	router.Group(func(r chi.Router) {
 		r.Use(middleware.OnlyAuthenticated())
 		r.Handle("/query", server)

@@ -4,17 +4,14 @@ import (
 	"encoding/json"
 	"net/http"
 	"task-tracker-backend/internal/model"
-	"task-tracker-backend/internal/repository"
+	"task-tracker-backend/internal/repository/gorm"
 	"task-tracker-backend/internal/utils"
 )
-
-// TODO singleton
-var userRepository = repository.UserRepository{}
 
 // Return jwt token if request body has correct User credentials in form-data format
 func Login(w http.ResponseWriter, r *http.Request) {
 	input := model.Credentials{Username: r.FormValue("username"), Password: r.FormValue("password")}
-	authenticated := userRepository.Authenticate(input)
+	authenticated := gorm.GetUserRepository().Authenticate(input)
 
 	if !authenticated {
 		http.Error(w, "wrong username or password", http.StatusNotFound)
@@ -33,7 +30,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 // Return created user as json
 func Register(w http.ResponseWriter, r *http.Request) {
 	input := model.Credentials{Username: r.FormValue("username"), Password: r.FormValue("password")}
-	user, err := userRepository.SaveFromInput(model.CredsToNewUser(input))
+	user, err := gorm.GetUserRepository().SaveFromInput(model.CredsToNewUser(input))
 	utils.HandleError(err) // TODO dont panic
 
 	json.NewEncoder(w).Encode(user)

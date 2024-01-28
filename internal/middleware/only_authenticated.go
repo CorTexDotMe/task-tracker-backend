@@ -3,12 +3,9 @@ package middleware
 import (
 	"context"
 	"net/http"
-	"task-tracker-backend/internal/repository"
+	"task-tracker-backend/internal/repository/gorm"
 	"task-tracker-backend/internal/utils"
 )
-
-// TODO singleton repository
-var userRepository = repository.UserRepository{}
 
 // Let only requests from authenticated users pass through.
 //
@@ -17,7 +14,6 @@ func OnlyAuthenticated() func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			header := r.Header.Get("Authorization")
-
 			if header == "" {
 				http.Error(w, "No Authorization provided", http.StatusUnauthorized)
 				return
@@ -29,7 +25,7 @@ func OnlyAuthenticated() func(http.Handler) http.Handler {
 				return
 			}
 
-			user, err := userRepository.GetByUsername(username)
+			user, err := gorm.GetUserRepository().GetByUsername(username)
 			if err != nil {
 				http.Error(w, "Wrong authorization token", http.StatusUnauthorized)
 				return
